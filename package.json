@@ -1,0 +1,23 @@
+{
+  "name": "mexp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "requirejs": "^2.3.6"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nanaSun/mExp.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nanaSun/mExp/issues"
+  },
+  "homepage": "https://github.com/nanaSun/mExp#readme"
+}
