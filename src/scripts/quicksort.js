@@ -3,14 +3,14 @@ const path=require("path")
 fs.readFile(path.resolve(__dirname,"antiquicksort1M.txt"),(err,data)=>{
     let array=data.toString().split("\n")
     let arrayb=array.map((d)=>parseInt(d))
-    let b=quickSort(arrayb,0,arrayb.length-1)
+    let b=quickBetterSort(arrayb,0,arrayb.length-1)
     check(b)
     let arraya=array.map((d)=>parseInt(d))
-    let a=quick3WaySort(arraya,0,arraya.length-1)
+    let a=quickSort(arraya,0,arraya.length-1)
     check(a)
-    let arrayc=array.map((d)=>parseInt(d))
-    let c=quick3WayBetterSort(arrayc,0,arrayc.length-1)
-    check(c)
+    // let arrayc=array.map((d)=>parseInt(d))
+    // let c=quick3WayBetterSort(arrayc,0,arrayc.length-1)
+    // check(c)
 })
 function quickSort(array,start,end){
     let times=0
@@ -144,12 +144,41 @@ function quick3WaySort(array,start,end){
     console.timeEnd("quick3WaySort")
     return array
 }
-function quick3WayBetterSort(array,start,end){
+function quickBetterSort(array,start,end){
     let times=0
     function sort(start,end){
         times++
         if(start>=end) return array
         let pivot=end
+        let mid=start,high=end
+        let n=array[pivot]
+        while(mid<=high){
+           let sn=array[mid]
+           if(sn<n){
+                mid++
+           }else{
+                array[mid]=array[high]
+                array[high]=sn
+                high--
+           }
+        }
+        array[pivot]=array[mid]
+        array[mid]=n
+        sort(start,mid-1)
+        sort(mid+1,end)
+    }
+    console.time("quick3WayBetterSort")
+    sort(start,end)
+    console.log(times)
+    console.timeEnd("quick3WayBetterSort")
+    return array
+}
+function quick3WayBetterSort(array,start,end){
+    let times=0
+    function sort(start,end){
+        times++
+        if(start>=end) return array
+        let pivot=Math.floor((start+end)/2)
         let low=start,mid=start,high=end
         let n=array[pivot]
         while(mid<=high){
@@ -192,7 +221,7 @@ function check(data){
 // let array=[4, 9, 4, 4, 1, 9, 4, 4, 9, 4, 4, 1, 4]
 // let array=[4, 9, 4, 4, 1, 9, 4, 4, 9, 4, 4, 1, 4]
 // let array=[4, 9, 4, 4, 1, 9, 4, 4, 9, 4, 4, 1, 4]
-// let array=[4, 9, 4,6,2 ,4, 9, 1, 1, 1,4, 9, 4, 4, 2,9, 1, 1, 1,4, 9, 4, 4, 9, 1,2, 1, 1,4, 9, 4, 4, 9, 1, 1, 1]
-// const a=quick3WayBetterSort(array,0,array.length-1)
+// //let array=[4, 9, 4,6,2 ,4, 9, 1, 1, 1,4, 9, 4, 4, 2,9, 1, 1, 1,4, 9, 4, 4, 9, 1,2, 1, 1,4, 9, 4, 4, 9, 1, 1, 1]
+// const a=quickBetterSort(array,0,array.length-1)
 // console.log(a)
 // check(a)
