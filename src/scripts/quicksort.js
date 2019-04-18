@@ -1,64 +1,56 @@
 const fs=require("fs")
 const path=require("path")
-fs.readFile(path.resolve(__dirname,"antiquicksort1M.txt"),(err,data)=>{
-    let array=data.toString().split("\n")
-    let arrayb=array.map((d)=>parseInt(d))
-    let b=quickBetterSort(arrayb,0,arrayb.length-1)
-    check(b)
-    let arraya=array.map((d)=>parseInt(d))
-    let a=quickSort(arraya,0,arraya.length-1)
-    check(a)
-    // let arrayc=array.map((d)=>parseInt(d))
-    // let c=quick3WayBetterSort(arrayc,0,arrayc.length-1)
+fs.readFile(path.resolve(__dirname,"antiquicksort10M.txt"),(err,data)=>{
+    // let array=data.toString().split("\n").map((d)=>parseInt(d))
+    // let a=quickSort(array,0,array.length-1)
+    // check(a)
+    // let b=quickBetterSort(array,0,array.length-1)
+    // check(b)
+    // let c=quickEndBetterSort(array,0,array.length-1)
     // check(c)
+//     let d=quick3WaySort(array,0,array.length-1)
+//     check(d)
+    // let e=quick3WayBetterSort(array,0,array.length-1)
+    // check(e)
+    // let f=quick3WayBetterStartSort(array,0,array.length-1)
+    // check(f)
+    // let g=quick3WayBetterEndSort(array,0,array.length-1)
+    // check(f)
 })
-function quickSort(array,start,end){
+//pivot center
+function quickSort(arr,start,end){
     let times=0
+    let array=[...arr]
     function sort(start,end){
         times++
         if(start>=end) return array
         let pivot=Math.floor((start+end)/2)
-        let i=start,j=end
+        let mid=start,high=end
+        let low=mid
         let n=array[pivot]
-        while(i<=j){
-            //console.log(JSON.stringify(array),i,j,n)
-            let sn=array[i],en=array[j]
-            if(i===pivot){
-                i++
-                continue
-            }else if(j===pivot){
-                j--
+        while(mid<=high){
+            if(mid===pivot){
+                mid++
                 continue
             }
-            if(sn>n&&en<=n){
-                array[i]=en
-                array[j]=sn
-                i++
-                j--
-            }else if(sn<=n&&en<=n){
-                i++
-            }else{//en>
-                j--
+            if(high===pivot){
+                high--
+                continue
             }
-            // console.log(i,j)
-        } 
-    
-        
-        let tmp=array[pivot]
-        //console.log(i,j,pivot)
-        // console.log(array[i],array[j],tmp)
-        if(i<pivot&&tmp<array[i]){
-            array[pivot]=array[i]
-            array[i]=tmp
-            pivot=i
-        }else if(j>=pivot&&tmp>=array[j]){
-            array[pivot]=array[j]
-            array[j]=tmp
-            pivot=j
+           let sn=array[mid]
+           if(sn<n){
+                mid++
+                low++
+           }else{
+                array[mid]= array[high]
+                array[high]=sn
+                high--
+           }
         }
-        //console.log(JSON.stringify(array),start,end,i,j,pivot)
-        sort(start,pivot-1)
-        sort(pivot+1,end)
+        array[pivot]=array[low]
+        array[low]=n
+        sort(start,low-1)
+        sort(low+1,end)
     }
     console.time("quickSort")
     sort(start,end)
@@ -111,8 +103,6 @@ function quick3WaySort(array,start,end){
                 j=pivoti-1
             }
         } 
-    
-        
         let tmp=array[pivot],len=pivotj-pivoti
         if(i<=pivoti&&tmp<=array[i]){
             let tmpi=i
@@ -144,37 +134,91 @@ function quick3WaySort(array,start,end){
     console.timeEnd("quick3WaySort")
     return array
 }
-function quickBetterSort(array,start,end){
+//pivot start
+function quickBetterSort(arr,start,end){
     let times=0
+    let array=[...arr]
+    function sort(start,end){
+        times++
+        if(start>=end) return array
+        let pivot=start
+        let mid=start,high=end
+        let n=array[pivot]
+        let low=start
+        while(mid<=high){
+            if(mid===pivot){
+                mid++
+                continue
+            }
+            if(high===pivot){
+                high--
+                continue
+            }
+           let sn=array[mid]
+           if(sn<n){
+                mid++
+                low++
+           }else{
+                array[mid]= array[high]
+                array[high]=sn
+                high--
+           }
+        }
+        array[pivot]=array[low]
+        array[low]=n
+        sort(start,low-1)
+        sort(low+1,end)
+    }
+    console.time("quickBetterSort")
+    sort(start,end)
+    console.log(times)
+    console.timeEnd("quickBetterSort")
+    return array
+}
+//pivot end
+function quickEndBetterSort(arr,start,end){
+    let times=0
+    let array=[...arr]
     function sort(start,end){
         times++
         if(start>=end) return array
         let pivot=end
         let mid=start,high=end
         let n=array[pivot]
+        let low=start
         while(mid<=high){
+            if(mid===pivot){
+                mid++
+                continue
+            }
+            if(high===pivot){
+                high--
+                continue
+            }
            let sn=array[mid]
            if(sn<n){
                 mid++
+                low++
            }else{
-                array[mid]=array[high]
+                array[mid]= array[high]
                 array[high]=sn
                 high--
            }
         }
-        array[pivot]=array[mid]
-        array[mid]=n
-        sort(start,mid-1)
-        sort(mid+1,end)
+        array[pivot]=array[low]
+        array[low]=n
+        sort(start,low-1)
+        sort(low+1,end)
     }
-    console.time("quick3WayBetterSort")
+    console.time("quickEndBetterSort")
     sort(start,end)
     console.log(times)
-    console.timeEnd("quick3WayBetterSort")
+    console.timeEnd("quickEndBetterSort")
     return array
 }
-function quick3WayBetterSort(array,start,end){
+function quick3WayBetterSort(arr,start,end){
     let times=0
+    let array=[...arr]
     function sort(start,end){
         times++
         if(start>=end) return array
@@ -205,6 +249,72 @@ function quick3WayBetterSort(array,start,end){
     console.timeEnd("quick3WayBetterSort")
     return array
 }
+function quick3WayBetterStartSort(arr,start,end){
+    let times=0
+    let array=[...arr]
+    function sort(start,end){
+        times++
+        if(start>=end) return array
+        let pivot=start
+        let low=start,mid=start,high=end
+        let n=array[pivot]
+        while(mid<=high){
+           let sn=array[mid]
+           if(sn<n){
+                array[mid]=array[low]
+                array[low]=sn
+                low++
+                mid++
+           }else if(sn===n){
+                mid++
+           }else if(sn>n){
+                array[mid]=array[high]
+                array[high]=sn
+                high--
+           }
+        }
+        sort(start,low-1)
+        sort(mid,end)
+    }
+    console.time("quick3WayBetterStartSort")
+    sort(start,end)
+    console.log(times)
+    console.timeEnd("quick3WayBetterStartSort")
+    return array
+}
+function quick3WayBetterEndSort(arr,start,end){
+    let times=0
+    let array=[...arr]
+    function sort(start,end){
+        times++
+        if(start>=end) return array
+        let pivot=end
+        let low=start,mid=start,high=end
+        let n=array[pivot]
+        while(mid<=high){
+           let sn=array[mid]
+           if(sn<n){
+                array[mid]=array[low]
+                array[low]=sn
+                low++
+                mid++
+           }else if(sn===n){
+                mid++
+           }else if(sn>n){
+                array[mid]=array[high]
+                array[high]=sn
+                high--
+           }
+        }
+        sort(start,low-1)
+        sort(mid,end)
+    }
+    console.time("quick3WayBetterEndSort")
+    sort(start,end)
+    console.log(times)
+    console.timeEnd("quick3WayBetterEndSort")
+    return array
+}
 function check(data){
     let res=true
     for(let i=0;i<data.length-1;i++){
@@ -221,7 +331,15 @@ function check(data){
 // let array=[4, 9, 4, 4, 1, 9, 4, 4, 9, 4, 4, 1, 4]
 // let array=[4, 9, 4, 4, 1, 9, 4, 4, 9, 4, 4, 1, 4]
 // let array=[4, 9, 4, 4, 1, 9, 4, 4, 9, 4, 4, 1, 4]
-// //let array=[4, 9, 4,6,2 ,4, 9, 1, 1, 1,4, 9, 4, 4, 2,9, 1, 1, 1,4, 9, 4, 4, 9, 1,2, 1, 1,4, 9, 4, 4, 9, 1, 1, 1]
-// const a=quickBetterSort(array,0,array.length-1)
-// console.log(a)
-// check(a)
+let array=[0,1,2,3,4,5,6,7].reverse()
+// //center
+const a=quickSort(array,0,array.length-1)
+check(a)
+console.log(a)
+//start
+const b=quickBetterSort(array,0,array.length-1)
+check(b)
+//end
+const c=quickEndBetterSort(array,0,array.length-1)
+console.log(c)
+check(c)
