@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    aaaa
+    <script src="./sea.js"></script>
+    <script>
+        // seajs.config({
+        //     plugins: ['shim'],
+        //     alias:{
+        //         'react':{
+        //             src:"./react",
+        //             exports: function(){
+        //                 console.log("bbbb")
+        //                 return React
+        //             }
+        //         }
+        //     }
+        // });
+    define("module2", function(require, exports, module) {
+        'use strict';
+         console.log("ccccc")
+    });
+    define("module1", function(require, exports, module) {
+        'use strict';
+         console.log("aaa")
+         if(false){
+            console.log(require("module2"))
+         }
+         console.log("bbb")
+    });
+    seajs.use("module1")
+    </script>
+</body>
+</html>

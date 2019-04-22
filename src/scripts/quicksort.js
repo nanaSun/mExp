@@ -1,33 +1,192 @@
-const fs=require("fs")
-const path=require("path")
-fs.readFile(path.resolve(__dirname,"antiquicksort10M.txt"),(err,data)=>{
-    // let array=data.toString().split("\n").map((d)=>parseInt(d))
-    // let a=quickSort(array,0,array.length-1)
-    // check(a)
-    // let b=quickBetterSort(array,0,array.length-1)
-    // check(b)
-    // let c=quickEndBetterSort(array,0,array.length-1)
-    // check(c)
-//     let d=quick3WaySort(array,0,array.length-1)
-//     check(d)
-    // let e=quick3WayBetterSort(array,0,array.length-1)
-    // check(e)
-    // let f=quick3WayBetterStartSort(array,0,array.length-1)
-    // check(f)
-    // let g=quick3WayBetterEndSort(array,0,array.length-1)
-    // check(f)
-})
+
 //pivot center
-function quickSort(arr,start,end){
+// t:0 start 1 end 2 middle 3 random
+function quickSort2(arr,t){
+    const type=typeof t!=="undefined"?t:"0"
+    const array=[...arr]
+    const sortInfo=[]
     let times=0
-    let array=[...arr]
+    let partition=function(){}
+    function getPivot(start,end){
+        let pivot=start,s=start+1,e=end
+        switch (type) {
+            case 1:
+                pivot=end
+                s=start
+                e=end-1
+                partition=partitionEnd
+                break;
+            case 2:
+                pivot=Math.floor((start+end)/2)
+                s=start
+                e=end
+                partition=partitionMiddle
+                break;
+            case 3:
+                pivot=Math.floor((end-start)*Math.random()+start)
+                s=start
+                e=end
+                partition=partitionMiddle
+                break;
+            default:
+                break;
+        }
+        return {
+            pivot:pivot,
+            low:s,
+            high:e,
+            needCheck:needCheck
+        }
+    } 
+    function swap(A,B){
+        if(A===B) return
+        let tmp=array[A]
+        array[A]=array[B]
+        array[B]=tmp
+    }
+    function partitionStart(low,high,pivot){
+        const n=array[pivot]
+        while(low<=high){
+            const ln=array[low]
+            if(ln<n){
+                low++
+            }else{
+                swap(low,high)
+                high--
+            }
+        }
+        swap(high,pivot)
+        return high
+    }
+    function partitionEnd(low,high,pivot){
+        const n=array[pivot]
+        while(low<=high){
+            const ln=array[low]
+            if(ln<n){
+                low++
+            }else{
+                swap(low,high)
+                high--
+            }
+        }
+        swap(low,pivot)
+        return low
+    }
+    function partitionMiddle(low,high,pivot){
+        const n=array[pivot]
+        while(low<=high){
+            if(low===pivot){
+                low++
+            }
+            if(high===pivot){
+                high--
+            }
+            const ln=array[low]
+            if(ln<n){
+                low++
+            }else{
+                swap(low,high)
+                high--
+            }
+        }
+        if(pivot<low){
+            swap(high,pivot)
+            return high
+        }
+        swap(low,pivot)
+        return low
+    }
     function sort(start,end){
         times++
+        if(start>=end) return
+        const {pivot,low,high}=getPivot(start,end)
+        let q=partition(low,high,pivot)
+        sort(start,q-1)
+        sort(q+1,end)
+    }
+    sort(0,array.length-1)
+    return [array,times]
+}
+function quickSortBetter2(arr,t){
+    const type=typeof t!=="undefined"?t:"0"
+    const array=[...arr]
+    const sortInfo=[]
+    let times=0
+    function getPivot(start,end){
+        let pivot=start,s=start,e=end
+        switch (type) {
+            case 1:
+                pivot=end
+                break;
+            case 2:
+                pivot=Math.floor((start+end)/2)
+                break;
+            case 3:
+                pivot=Math.floor((end-start)*Math.random()+start)
+                break;
+            default:
+                break;
+        }
+        return {
+            pivot:pivot,
+            low:s,
+            high:e
+        }
+    } 
+    function swap(A,B){
+        if(A===B) return
+        let tmp=array[A]
+        array[A]=array[B]
+        array[B]=tmp
+    }
+    function partition(low,high,pivot){
+        const n=array[pivot]
+        let mid=low
+        while(mid<=high){
+            const ln=array[mid]
+            if(ln<n){
+                swap(mid,low)
+                low++
+                mid++
+            }else if(ln===n){
+                mid++
+            }else{
+                swap(mid,high)
+                high--
+            }
+        }
+        return [low-1,mid]
+    }
+    function sort(start,end){
+        times++
+        if(start>=end) return
+        const {pivot,low,high}=getPivot(start,end)
+        let q=partition(low,high,pivot)
+        sort(start,q[0])
+        sort(q[1],end)
+    }
+    sort(0,array.length-1)
+    return [array,times]
+}
+function quickSort(arr,start,end){
+    let times=0
+    let array=[...arr],sortInfo=[]
+    function swap(indexA,indexB,Avalue){
+        if(indexA===indexB) return
+        array[indexA]= array[indexB]
+        array[indexB]=Avalue
+        const change=sortInfo[times].change
+        const current=change[change.length-1]
+        current["swap"]=1
+    }
+    function sort(start,end){
+        
         if(start>=end) return array
         let pivot=Math.floor((start+end)/2)
         let mid=start,high=end
         let low=mid
         let n=array[pivot]
+        sortInfo.push({pivot:pivot,change:[]})
         while(mid<=high){
             if(mid===pivot){
                 mid++
@@ -37,18 +196,19 @@ function quickSort(arr,start,end){
                 high--
                 continue
             }
+           sortInfo[times].change.push({compare:[mid,high],swap:0})
            let sn=array[mid]
            if(sn<n){
                 mid++
                 low++
            }else{
-                array[mid]= array[high]
-                array[high]=sn
+                swap(mid,high,sn,pivot)
                 high--
            }
         }
-        array[pivot]=array[low]
-        array[low]=n
+        sortInfo[times].change.push({compare:[pivot,low],swap:0})
+        swap(pivot,low,n)
+        times++
         sort(start,low-1)
         sort(low+1,end)
     }
@@ -56,7 +216,7 @@ function quickSort(arr,start,end){
     sort(start,end)
     console.log(times)
     console.timeEnd("quickSort")
-    return array
+    return {arr:array,info:sortInfo}
 }
 function quick3WaySort(array,start,end){
     let times=0;
@@ -330,16 +490,11 @@ function check(data){
 }
 // let array=[4, 9, 4, 4, 1, 9, 4, 4, 9, 4, 4, 1, 4]
 // let array=[4, 9, 4, 4, 1, 9, 4, 4, 9, 4, 4, 1, 4]
-// let array=[4, 9, 4, 4, 1, 9, 4, 4, 9, 4, 4, 1, 4]
-let array=[0,1,2,3,4,5,6,7].reverse()
-// //center
-const a=quickSort(array,0,array.length-1)
-check(a)
-console.log(a)
-//start
-const b=quickBetterSort(array,0,array.length-1)
-check(b)
-//end
-const c=quickEndBetterSort(array,0,array.length-1)
-console.log(c)
-check(c)
+// let array=[3,7,8,5,2,1,9,5,4]
+// // let array=[0,1,2,3,4,5,6,7].reverse()
+// // //center
+// const a=quickSortBetter2(array,3)
+// check(a)
+// console.log(a)
+
+module.exports={quickSort2,quickSortBetter2,check}

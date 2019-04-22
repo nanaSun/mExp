@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    aaaa
+    <script src="./require.js"></script>
+    <script>
+        // requirejs.config({
+        //     paths: {
+        //         'react': './react',
+        //     }
+        // })
+        define("module1",function(require) {
+            'use strict';
+            console.log("ccccc")
+        });
+        define("module2",["module1"],function(module1) {
+            'use strict';
+            console.log("aaaa")
+            if(false){
+                console.log(module1)
+            }
+            console.log("bbbb")
+        });
+        define("module3",["module2"],function(module1) {
+            'use strict';
+            console.log("dddd")
+            if(false){
+                console.log(module1)
+            }
+            console.log("eeee")
+        });
+
+        require(["module2","module3"])
+    </script>
+</body>
+</html>

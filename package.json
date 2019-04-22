@@ -5,6 +5,9 @@
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {
+    "chai": "^4.2.0",
+    "http-server": "^0.11.1",
+    "mocha": "^6.1.4",
     "requirejs": "^2.3.6",
     "seajs": "^3.0.3"
   },
