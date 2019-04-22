@@ -8,7 +8,8 @@ function quickSort2(arr,t){
     let times=0
     let partition=function(){}
     function getPivot(start,end){
-        let pivot=start,s=start+1,e=end
+        let pivot=start,s=start+1,e=end;
+        partition=partitionStart
         switch (type) {
             case 1:
                 pivot=end
@@ -34,8 +35,7 @@ function quickSort2(arr,t){
         return {
             pivot:pivot,
             low:s,
-            high:e,
-            needCheck:needCheck
+            high:e
         }
     } 
     function swap(A,B){
